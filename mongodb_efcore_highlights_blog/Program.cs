@@ -103,7 +103,7 @@ public class MflixDbContext : DbContext
     }
 }
 
-internal class Movie
+public class Movie
 {
     public ObjectId Id { get; set; }
 
