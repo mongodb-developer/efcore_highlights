@@ -49,9 +49,10 @@ void PrintIndexes()
 
 
 //LINQ to find all PG-13 movies sorted by title and containing the work "shark" in their plot
-var myMovies = db.Movies.
-    Where(m => m.Rated == "PG-13" && m.Plot.Contains("shark")).
-    OrderBy(m => m.Title);
+var myMovies = await db.Movies
+    .Where(m => m.Rated == "PG-13" && m.Plot.Contains("shark"))
+    .OrderBy(m => m.Title)
+    .ToListAsync();
 
 foreach (var m in myMovies)
 {
@@ -78,13 +79,15 @@ dbContext2.Movies.Add(myMovie3);
 await dbContext2.SaveChangesAsync();
 
 
-internal class MflixDbContext : DbContext
+public class MflixDbContext : DbContext
 {
     public DbSet<Movie> Movies { get; init; }
 
     public static MflixDbContext Create(IMongoDatabase database) =>
         new(new DbContextOptionsBuilder<MflixDbContext>()
             .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
+            .LogTo(Console.WriteLine)
+            .EnableSensitiveDataLogging()
             .Options);
 
     public MflixDbContext(DbContextOptions options)
